@@ -1,0 +1,199 @@
+# Password Pair Finder
+
+## Description
+
+The **Password Pair Finder** program allows users to transform a password into different types of hashes and then compare those hashes with a dictionary of commonly used passwords to find a match. If a match is found, the corresponding password is reported to the user.
+
+## Features
+
+1. **Password Input**: Users can input a password they wish to hash.
+2. **Dictionary Selection**: Users can provide a path to a password dictionary or use a default one.
+3. **Hash Type Selection**: Users can select from various hash algorithms (MD5, SHA1, SHA224, SHA256, SHA384, SHA512) or use all algorithms.
+4. **Hash Comparison**: The program compares the hash of the entered password with hashes of passwords in the dictionary and displays the corresponding password if a match is found.
+
+## Requirements
+
+- Python 3.x
+
+## Usage
+
+1. Clone the repository or download the files.
+2. Ensure you have a password dictionary in `.txt` format.
+3. Run the program:
+
+    ```bash
+    python password_pair_finder.py
+    ```
+
+4. Follow the on-screen instructions.
+
+## Code
+
+```python
+import hashlib
+
+class PasswordPair:
+
+    def __init__(self):
+        self.clave = None
+
+    def menu(self):
+        print("Welcome to the password pair finder")
+        print("The instructions for this code are simple: first you transform your password to some encrypted type, and after you compare it with the dictionary of passwords found on the internet.")
+        print("Enter your password")
+        self.clave = input("Enter your password: ")
+        self.menu2()
+
+    def menu2(self):
+        print("You can download a password dictionary and provide the path where the txt file is located. If you don't have it, we have a default one.")
+        user_choice = input("If you have a dictionary, copy the path here. If you don't have one, type 2: ")
+        if user_choice == "2":
+            self.default_path = "C:/Users/CHK/Downloads/10-million-password-list-top-100000.txt"
+        else:
+            self.default_path = user_choice
+
+        self.main()
+
+    def main(self):
+        if not self.clave:
+            print("No password provided.")
+            return
+
+        clave_bytes = self.clave.encode()
+
+        user_encrypt = int(input("Menu options\n1 - for MD5\n2 - for SHA1\n3 - for SHA224\n4 - for SHA256\n5 - for SHA384\n6 - for SHA512\n7 - for using all options\nEnter the number corresponding to the type of encryption you want to use: "))
+
+        if user_encrypt == 1:
+            md5 = hashlib.md5(clave_bytes).hexdigest()
+            print("Hash MD5 : " + md5)
+            self.pair(md5, user_encrypt)
+        elif user_encrypt == 2:
+            sha1 = hashlib.sha1(clave_bytes).hexdigest()
+            print("Hash SHA1 : " + sha1)
+            self.pair(sha1, user_encrypt)
+        elif user_encrypt == 3:
+            sha224 = hashlib.sha224(clave_bytes).hexdigest()
+            print("Hash SHA224 : " + sha224)
+            self.pair(sha224, user_encrypt)
+        elif user_encrypt == 4:
+            sha256 = hashlib.sha256(clave_bytes).hexdigest()
+            print("Hash SHA256 : " + sha256)
+            self.pair(sha256, user_encrypt)
+        elif user_encrypt == 5:
+            sha384 = hashlib.sha384(clave_bytes).hexdigest()
+            print("Hash SHA384 : " + sha384)
+            self.pair(sha384, user_encrypt)
+        elif user_encrypt == 6:
+            sha512 = hashlib.sha512(clave_bytes).hexdigest()
+            print("Hash SHA512 : " + sha512)
+            self.pair(sha512, user_encrypt)
+        elif user_encrypt == 7:
+            md5 = hashlib.md5(clave_bytes).hexdigest()
+            print("Hash MD5 : " + md5)
+            self.pair(md5, 1)
+            
+            sha1 = hashlib.sha1(clave_bytes).hexdigest()
+            print("Hash SHA1 : " + sha1)
+            self.pair(sha1, 2)
+
+            sha224 = hashlib.sha224(clave_bytes).hexdigest()
+            print("Hash SHA224 : " + sha224)
+            self.pair(sha224, 3)
+
+            sha256 = hashlib.sha256(clave_bytes).hexdigest()
+            print("Hash SHA256 : " + sha256)
+            self.pair(sha256, 4)
+
+            sha384 = hashlib.sha384(clave_bytes).hexdigest()
+            print("Hash SHA384 : " + sha384)
+            self.pair(sha384, 5)
+
+            sha512 = hashlib.sha512(clave_bytes).hexdigest()
+            print("Hash SHA512 : " + sha512)
+            self.pair(sha512, 6)
+        else:
+            print("Invalid option selected.")
+            return
+
+    def pair(self, resolvehash, hash_type):
+        hash_name = {
+            1: "MD5",
+            2: "SHA1",
+            3: "SHA224",
+            4: "SHA256",
+            5: "SHA384",
+            6: "SHA512"
+        }
+        with open(self.default_path, 'r') as resolvedor:
+            for x in resolvedor:
+                a = x.strip("\n")
+                
+                if hash_type == 1:
+                    hashed = hashlib.md5(a.encode()).hexdigest()
+                elif hash_type == 2:
+                    hashed = hashlib.sha1(a.encode()).hexdigest()
+                elif hash_type == 3:
+                    hashed = hashlib.sha224(a.encode()).hexdigest()
+                elif hash_type == 4:
+                    hashed = hashlib.sha256(a.encode()).hexdigest()
+                elif hash_type == 5:
+                    hashed = hashlib.sha384(a.encode()).hexdigest()
+                elif hash_type == 6:
+                    hashed = hashlib.sha512(a.encode()).hexdigest()
+                else:
+                    print("Invalid hash type.")
+                    return
+                
+                if hashed == resolvehash:
+                    print(f"Clave: {a} - This hash ({hash_name[hash_type]}) was resolved: {hashed}")
+                    break  # Stops searching if the hash is found
+            else:
+                print(f"No match found for the given hash with {hash_name[hash_type]} type.")
+
+if __name__ == '__main__':
+    finder = PasswordPair()
+    finder.menu()
+```
+
+## Code Details
+
+### `PasswordPair` Class
+
+#### Methods
+
+- **`__init__(self)`**: Initializes the instance with the `clave` variable set to `None`.
+- **`menu(self)`**: 
+  - Prints the welcome message and instructions.
+  - Prompts the user to enter a password.
+  - Calls the `menu2` method.
+- **`menu2(self)`**: 
+  - Asks the user for the path to a password dictionary or uses a default one.
+  - Calls the `main` method.
+- **`main(self)`**:
+  - Checks if a password has been provided.
+  - Prompts the user to select a hash type.
+  - Generates the corresponding hash based on the user's selection.
+  - Calls the `pair` method with the generated hash and hash type.
+- **`pair(self, resolvehash, hash_type)`**:
+  - Opens the password dictionary file.
+  - Reads each line, converts it to the corresponding hash, and compares it with the hash provided by the user.
+  - If a match is found, prints the password and the hash type.
+  - If no match is found, prints a message indicating so.
+
+## Contribution
+
+If you wish to contribute to this project, please follow these steps:
+
+1. Fork the project.
+2. Create a branch (`git checkout -b feature/AmazingFeature`).
+3. Make your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contact
+
+For any questions or suggestions, please contact [sebacaceresino@gmail.com](sebacaceresino@gmail.com).
